@@ -28,6 +28,11 @@ import {
 import {Example2D, shuffle} from "./dataset";
 import {AppendingLineChart} from "./linechart";
 import * as d3 from 'd3';
+import * as IPFS from 'ipfs';
+
+const node = new IPFS();
+const validCID = 'QmTengyUmb1FVbDoPJDTAW3HFrDoru7FYcouSeM3QMkaLh'; // 2 sample datasets
+
 
 let mainWidth;
 
@@ -1113,9 +1118,17 @@ function simulationStarted() {
   parametersChanged = false;
 }
 
-drawDatasetThumbnails();
-initTutorial();
-makeGUI();
-generateData(true);
-reset(true);
-hideControls();
+node.once('ready', _ => {
+  console.log('IPFS Ready!');
+
+  node.files.get(validCID, (err, files) => {
+    console.log('FILES', files);
+    drawDatasetThumbnails();
+    initTutorial();
+    makeGUI();
+    generateData(true);
+    reset(true);
+    hideControls();
+  });
+});
+
